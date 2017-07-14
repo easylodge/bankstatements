@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Bankstatement::Response do
+describe Bankstatements::Response do
   it { should belong_to(:request).dependent(:destroy) }
 
   describe ".initialize" do
     it "converts :header to a hash" do
       not_a_hash = OpenStruct.new
       expect(not_a_hash).to receive(:to_h)
-      Bankstatement::Response.new(headers: not_a_hash)
+      Bankstatements::Response.new(headers: not_a_hash)
     end
   end
 

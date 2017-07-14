@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Bankstatement::Request do
+describe Bankstatements::Request do
   it { should have_one(:response).dependent(:destroy) }
 
   it { should validate_presence_of(:access) }
@@ -19,7 +19,7 @@ describe Bankstatement::Request do
       :bar => "bar"
     }
 
-    @request = Bankstatement::Request.new(access: @access_hash, enquiry: @enquiry_hash)
+    @request = Bankstatements::Request.new(access: @access_hash, enquiry: @enquiry_hash)
   end
 
   describe ".json" do
