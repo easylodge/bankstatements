@@ -1,3 +1,3 @@
-module Bankstatement
+module Bankstatements
   VERSION = "0.0.1"
 end

@@ -1,8 +1,8 @@
 require 'rails'
 
-module Bankstatement
+module Bankstatements
   class Railtie < Rails::Railtie
-	 railtie_name :bankstatement
+	 railtie_name :bankstatements
   end
 end
 

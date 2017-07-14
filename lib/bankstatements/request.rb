@@ -1,4 +1,4 @@
-class Bankstatement::Request < ActiveRecord::Base
+class Bankstatements::Request < ActiveRecord::Base
   self.table_name = "bankstatement_requests"
   has_one :response, dependent: :destroy, inverse_of: :request
   serialize :access

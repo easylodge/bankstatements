@@ -1,4 +1,4 @@
-class Bankstatement::Response < ActiveRecord::Base
+class Bankstatements::Response < ActiveRecord::Base
   self.table_name = "bankstatement_responses"
   belongs_to :request, dependent: :destroy, inverse_of: :response
 
