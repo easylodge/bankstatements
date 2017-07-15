@@ -9,6 +9,9 @@ class Bankstatements::Request < ActiveRecord::Base
 
   def json
     #TODO: turn @enquiry into json payload for request
+    {
+      something: "test"
+    }
   end
 
   def post

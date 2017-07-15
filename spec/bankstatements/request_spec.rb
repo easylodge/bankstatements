@@ -8,7 +8,6 @@ describe Bankstatements::Request, focus: true do
 
   before(:each) do
     @config = YAML.load_file('dev_config.yml')
-    # @config = {url: "url", apy_key: "api_key"}
     @access_hash =
       {
         :url => @config["url"],
