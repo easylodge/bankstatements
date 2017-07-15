@@ -15,6 +15,7 @@ self.verbose = false
     t.integer :code
     t.text :json
     t.boolean :success
+    t.integer :request_id
     # TODO
     t.timestamps
   end

@@ -31,17 +31,17 @@ describe Bankstatements::Request, focus: true do
     context "when invalid" do
       it "raises exception if there is no json" do
         @request.json = nil
-        expect(@request.error.message).to eq("No request json")
+        expect(@request.errors.message).to eq("No request json")
       end
 
       it "raises exception if there is no api_key" do
         @request.access[:api_key] = nil
-        expect(@request.error.message).to eq("No API KEY provided")
+        expect(@request.errors.message).to eq("No API KEY provided")
       end
 
       it "raises exception if there is no api url" do
         @request.access[:url] = nil
-        expect(@request.error.message).to eq("No API URL provided")
+        expect(@request.errors.message).to eq("No API URL provided")
       end
     end
 
