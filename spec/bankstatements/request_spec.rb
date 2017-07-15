@@ -51,12 +51,20 @@ describe Bankstatements::Request, focus: true do
       end
 
       it "sets the X-API-KEY header" do
-        expect(header["X-API-KEY"].present?).to eq(true)
+        expect(header['X-API-KEY'].present?).to eq(true)
       end
-      
-      it "sets the X-OUTPUT-VERSION header" #to 20170401
-      it "sets the Content-Type header" #to application/json
-      it "sets the Accept header" #to application/json
+
+      it "sets the X-OUTPUT-VERSION header"  do
+        expect(header['X-OUTPUT-VERSION']).to eq('20170401')  #to 20170401
+      end
+
+      it "sets the Content-Type header"  do
+        expect(header['Content-Type']).to eq('application/json')  #to application/json
+      end
+      it "sets the Accept header" do
+        expect(header['Accept']).to eq('application/json')   #to application/json
+      end
+
       it "posts the request" #mock the post, just check that it's called
     end
 

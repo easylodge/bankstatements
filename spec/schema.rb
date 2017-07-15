@@ -4,6 +4,8 @@ self.verbose = false
   create_table :bankstatement_requests do |t|
     t.integer :ref_id
     t.text :json
+    t.text :access
+    t.text :enquiry
     # TODO
     t.timestamps
   end
