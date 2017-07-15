@@ -22,7 +22,3 @@ require_relative 'spec/schema'
 
 # puts "This is the result of Bankstatement::Request.access: #{Bankstatement::Request.access}"
 puts "You have a @req and @res object to use"
-
-
-
-

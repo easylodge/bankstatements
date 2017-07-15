@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Bankstatements::Request do
+describe Bankstatements::Request, focus: true do
   it { should have_one(:response).dependent(:destroy) }
 
   it { should validate_presence_of(:access) }
@@ -8,6 +8,7 @@ describe Bankstatements::Request do
 
   before(:each) do
     @config = YAML.load_file('dev_config.yml')
+    # @config = {url: "url", apy_key: "api_key"}
     @access_hash =
       {
         :url => @config["url"],
@@ -23,18 +24,36 @@ describe Bankstatements::Request do
   end
 
   describe ".json" do
-    it "converts the enrquiry values into a json structure"
+    it "converts the enquiry values into a json structure"
   end
 
   describe ".post" do
     context "when invalid" do
-      it "raises exception if there is no json"
-      it "raises exception if there is no api_key"
-      it "raises exception if there is no api url"
+      it "raises exception if there is no json" do
+        @request.json = nil
+        expect(@request.error.message).to eq("No request json")
+      end
+
+      it "raises exception if there is no api_key" do
+        @request.access[:api_key] = nil
+        expect(@request.error.message).to eq("No API KEY provided")
+      end
+
+      it "raises exception if there is no api url" do
+        @request.access[:url] = nil
+        expect(@request.error.message).to eq("No API URL provided")
+      end
     end
 
     context "when valid" do
-      it "sets the X-API-KEY header"
+      before(:each) do
+        header = @request.post
+      end
+
+      it "sets the X-API-KEY header" do
+        expect(header["X-API-KEY"].present?).to eq(true)
+      end
+      
       it "sets the X-OUTPUT-VERSION header" #to 20170401
       it "sets the Content-Type header" #to application/json
       it "sets the Accept header" #to application/json
@@ -45,4 +64,3 @@ describe Bankstatements::Request do
   end
 
 end
-
