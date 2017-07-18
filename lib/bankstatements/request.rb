@@ -17,6 +17,7 @@ class Bankstatements::Request < ActiveRecord::Base
     raise "No request json" unless self.json
     raise "No API KEY provided" unless self.access[:api_key].present?
     raise "No API URL provided" unless self.access[:url].present?
+    return self.response if self.response.present?
 
     headers = {
       'X-API-KEY' => self.access[:api_key],
@@ -25,7 +26,13 @@ class Bankstatements::Request < ActiveRecord::Base
       'X-OUTPUT-VERSION' => '20170401'
     }
 
-    HTTParty.post(self.access[:url], :body => self.json, :headers => headers)
+    http_response = HTTParty.post(self.access[:url], :body => self.json, :headers => headers)
+    self.response = Bankstatements::Response.new(
+      headers: http_response.headers,
+      json: http_response.parsed_response,
+      code: http_response.code,
+      success: http_response.code == 200
+    )
   end
 
 end

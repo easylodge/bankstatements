@@ -26,8 +26,8 @@ describe Bankstatements::Request do
       :foo => "foo",
       :bar => "bar"
     }
-    @request = Bankstatements::Request.new(access: @access_hash, enquiry: @enquiry_hash)
 
+    @request = Bankstatements::Request.new(access: @access_hash, enquiry: @enquiry_hash)
   end
 
   describe ".json" do
@@ -44,7 +44,12 @@ describe Bankstatements::Request do
   describe ".post" do
     before(:each) do
       # prevent calling the actual URL, we jsut harvest the opts we pass in so we can invetigate them if we want
-      allow(HTTParty).to receive(:post).with(any_args){|u, h| [u, h]}
+      allow(HTTParty).to receive(:post).with(any_args){|u, h|
+        os = OpenStruct.new()
+        os.headers = h[:headers]
+        os.body = h[:body]
+        os
+      }
     end
 
     context "when invalid" do
@@ -68,7 +73,7 @@ describe Bankstatements::Request do
       context "with headers" do
         before(:each) do
           # The structure here is dependent on our mock for the HTTParty message way at the top
-          @headers = @request.post.last[:headers]
+          @headers = @request.post.headers
         end
 
         it "sets X-API-KEY" do
@@ -91,7 +96,27 @@ describe Bankstatements::Request do
         expect(HTTParty).to receive(:post)
         @request.post
       end
+
+      it "returns the response if it's available" do
+        @request.response = Bankstatements::Response.new()
+        expect(HTTParty).to_not receive(:post)
+        expect(@request.post).to eq(@request.response)
+      end
+
+      it "return a Bankstatements::Response" do
+        expect(@request.post).to be_a(Bankstatements::Response)
+      end
     end
+
   end
 
+  describe "call to test platform" do
+    before(:each) do
+      @response = @request.post
+    end
+
+    it "returns some data" do
+      expect(@response).to eq("fff")
+    end
+  end
 end
