@@ -28,8 +28,6 @@ describe Bankstatements::Request do
     }
     @request = Bankstatements::Request.new(access: @access_hash, enquiry: @enquiry_hash)
 
-    # prevent calling the actual URL, we jsut harvest the opts we pass in so we can invetigate them if we want
-    allow(HTTParty).to receive(:post).with(any_args){|u, h| [u, h]}
   end
 
   describe ".json" do
@@ -44,6 +42,11 @@ describe Bankstatements::Request do
   end
 
   describe ".post" do
+    before(:each) do
+      # prevent calling the actual URL, we jsut harvest the opts we pass in so we can invetigate them if we want
+      allow(HTTParty).to receive(:post).with(any_args){|u, h| [u, h]}
+    end
+
     context "when invalid" do
       it "raises exception if there is no request json" do
         @request.enquiry = nil
