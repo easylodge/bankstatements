@@ -3,7 +3,7 @@ class Bankstatements::Response < ActiveRecord::Base
   belongs_to :request, dependent: :destroy, inverse_of: :response
 
   serialize :headers
-  serialize :struct
+  serialize :json
 
   def initialize(options={})
     if options[:headers]
@@ -13,15 +13,12 @@ class Bankstatements::Response < ActiveRecord::Base
   end
 
   def to_hash
-    if self.json
-      Hash.from_json(self.json)
-    else
-      "No hash was created because there was no json"
-    end
+    raise "No json to construct hash from" unless self.json.present?
+    self.json.to_h
   end
 
   def error
-    self.json unless self.success?
+    self.to_hash unless self.success?
   end
 
 end

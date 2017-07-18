@@ -1,10 +1,18 @@
 require 'spec_helper'
 
-describe Bankstatements::Request, focus: true do
+describe Bankstatements::Request do
   it { should have_one(:response).dependent(:destroy) }
 
   it { should validate_presence_of(:access) }
   it { should validate_presence_of(:enquiry) }
+
+  it { should respond_to(:ref_id) }
+  it { should respond_to(:json) }
+  it { should respond_to(:access) }
+  it { should respond_to(:enquiry) }
+  it { should respond_to(:created_at) }
+  it { should respond_to(:updated_at) }
+
 
   before(:each) do
     @config = YAML.load_file('dev_config.yml')
@@ -81,8 +89,6 @@ describe Bankstatements::Request, focus: true do
         @request.post
       end
     end
-
-
   end
 
 end
