@@ -18,53 +18,68 @@ describe Bankstatements::Request, focus: true do
       :foo => "foo",
       :bar => "bar"
     }
-
     @request = Bankstatements::Request.new(access: @access_hash, enquiry: @enquiry_hash)
+
+    # prevent calling the actual URL, we jsut harvest the opts we pass in so we can invetigate them if we want
+    allow(HTTParty).to receive(:post).with(any_args){|u, h| [u, h]}
   end
 
   describe ".json" do
-    it "converts the enquiry values into a json structure"
+    it "returns nil if no enquiry is available" do
+      @request.enquiry = nil
+      expect(@request.json).to eq(nil)
+    end
+
+    it "converts the enquiry values into a json structure" do
+      expect(@request.json).to eq(@enquiry_hash.to_json)
+    end
   end
 
   describe ".post" do
     context "when invalid" do
-      it "raises exception if there is no json" do
-        @request.json = nil
-        expect(@request.errors.message).to eq("No request json")
+      it "raises exception if there is no request json" do
+        @request.enquiry = nil
+        expect{@request.post}.to raise_error("No request json")
       end
 
       it "raises exception if there is no api_key" do
         @request.access[:api_key] = nil
-        expect(@request.errors.message).to eq("No API KEY provided")
+        expect{@request.post}.to raise_error("No API KEY provided")
       end
 
       it "raises exception if there is no api url" do
         @request.access[:url] = nil
-        expect(@request.errors.message).to eq("No API URL provided")
+        expect{@request.post}.to raise_error("No API URL provided")
       end
     end
 
     context "when valid" do
-      before(:each) do
-        header = @request.post
+      context "with headers" do
+        before(:each) do
+          # The structure here is dependent on our mock for the HTTParty message way at the top
+          @headers = @request.post.last[:headers]
+        end
+
+        it "sets X-API-KEY" do
+          expect(@headers['X-API-KEY'].present?).to eq(true)
+        end
+
+        it "sets X-OUTPUT-VERSION"  do
+          expect(@headers['X-OUTPUT-VERSION']).to eq('20170401')  #to 20170401
+        end
+
+        it "sets Content-Type"  do
+          expect(@headers['Content-Type']).to eq('application/json')  #to application/json
+        end
+        it "sets Accept" do
+          expect(@headers['Accept']).to eq('application/json')   #to application/json
+        end
       end
 
-      it "sets the X-API-KEY header" do
-        expect(header['X-API-KEY'].present?).to eq(true)
+      it "posts the request" do
+        expect(HTTParty).to receive(:post)
+        @request.post
       end
-
-      it "sets the X-OUTPUT-VERSION header"  do
-        expect(header['X-OUTPUT-VERSION']).to eq('20170401')  #to 20170401
-      end
-
-      it "sets the Content-Type header"  do
-        expect(header['Content-Type']).to eq('application/json')  #to application/json
-      end
-      it "sets the Accept header" do
-        expect(header['Accept']).to eq('application/json')   #to application/json
-      end
-
-      it "posts the request" #mock the post, just check that it's called
     end
 
 

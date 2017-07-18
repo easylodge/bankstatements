@@ -8,16 +8,15 @@ class Bankstatements::Request < ActiveRecord::Base
   validates :enquiry, presence: true
 
   def json
+    return nil unless self.enquiry.present?
     #TODO: turn @enquiry into json payload for request
-    {
-      something: "test"
-    }
+    enquiry.to_json
   end
 
   def post
     raise "No request json" unless self.json
-    raise "No API KEY provided" unless self.access[:api_key]
-    raise "No API URL provided" unless self.access[:url]
+    raise "No API KEY provided" unless self.access[:api_key].present?
+    raise "No API URL provided" unless self.access[:url].present?
 
     headers = {
       'X-API-KEY' => self.access[:api_key],
