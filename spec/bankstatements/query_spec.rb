@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Bankstatements::Request do
-  let(:subject) {Bankstatements::Request.new}
+describe Bankstatements::Query do
+  let(:subject) {Bankstatements::Query.new}
 
   it { should respond_to(:ref_id) }
   it { should respond_to(:access) }
@@ -116,19 +116,19 @@ p subject.accounts
   #   end
 
   #   context "when invalid" do
-  #     it "raises exception if there is no request json" do
-  #       @request.enquiry = nil
-  #       expect{@request.post}.to raise_error("No request json")
+  #     it "raises exception if there is no query json" do
+  #       @query.enquiry = nil
+  #       expect{@query.post}.to raise_error("No query json")
   #     end
 
   #     it "raises exception if there is no api_key" do
-  #       @request.access[:api_key] = nil
-  #       expect{@request.post}.to raise_error("No API KEY provided")
+  #       @query.access[:api_key] = nil
+  #       expect{@query.post}.to raise_error("No API KEY provided")
   #     end
 
   #     it "raises exception if there is no api url" do
-  #       @request.access[:url] = nil
-  #       expect{@request.post}.to raise_error("No API URL provided")
+  #       @query.access[:url] = nil
+  #       expect{@query.post}.to raise_error("No API URL provided")
   #     end
   #   end
 
@@ -136,7 +136,7 @@ p subject.accounts
   #     context "with headers" do
   #       before(:each) do
   #         # The structure here is dependent on our mock for the HTTParty message way at the top
-  #         @headers = @request.post.headers
+  #         @headers = @query.post.headers
   #       end
 
   #       it "sets X-API-KEY" do
@@ -155,19 +155,19 @@ p subject.accounts
   #       end
   #     end
 
-  #     it "posts the request" do
+  #     it "posts the query" do
   #       expect(HTTParty).to receive(:post)
-  #       @request.post
+  #       @query.post
   #     end
 
   #     it "returns the response if it's available" do
-  #       @request.response = Bankstatements::Response.new()
+  #       @query.response = Bankstatements::Response.new()
   #       expect(HTTParty).to_not receive(:post)
-  #       expect(@request.post).to eq(@request.response)
+  #       expect(@query.post).to eq(@query.response)
   #     end
 
   #     it "return a Bankstatements::Response" do
-  #       expect(@request.post).to be_a(Bankstatements::Response)
+  #       expect(@query.post).to be_a(Bankstatements::Response)
   #     end
   #   end
   # end

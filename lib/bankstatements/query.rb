@@ -1,5 +1,5 @@
-class Bankstatements::Request < ActiveRecord::Base
-  self.table_name = "bankstatement_requests"
+class Bankstatements::Query < ActiveRecord::Base
+  self.table_name = "bankstatement_query"
 
   serialize :access
   serialize :accounts

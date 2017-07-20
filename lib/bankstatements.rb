@@ -1,7 +1,6 @@
 require 'active_record'
 require 'bankstatements/version'
-require 'bankstatements/request'
-require 'bankstatements/response'
+require 'bankstatements/query'
 require 'httparty'
 require 'bankstatements/railtie' if defined?(Rails)
 

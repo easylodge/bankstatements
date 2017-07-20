@@ -9,16 +9,18 @@ require_relative 'spec/schema'
 @access_hash = {
   :url => @config["url"],
   :access_code => @config["access_code"],
-  :password => @config["password"]
+  :password => @config["password"],
+  :username => @config["username"],
+
 }
 
 @enquiry = {
   'foo' => 'bar'
 }
 
-@req = Bankstatement::Request.new(access: @access_hash, enquiry: @enquiry)
-@post = @req.post
-@res = Bankstatement::Response.create(json: @post.body, headers: @post.header, code: @post.code, success: @post.success?)
+@req = Bankstatement::query.new(access: @access_hash)
 
-# puts "This is the result of Bankstatement::Request.access: #{Bankstatement::Request.access}"
-puts "You have a @req and @res object to use"
+puts "You now have a request instance to use."
+# @req.get_institutions
+# @req.get_accounts
+

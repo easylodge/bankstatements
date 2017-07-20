@@ -12,9 +12,7 @@ module Bankstatement
 
       def create_migration_file
         #copy migration
-        migration_template "migration_bankstatement_request.rb", "db/migrate/create_bankstatement_request.rb"
-        sleep 1
-        migration_template "migration_bankstatement_response.rb", "db/migrate/create_bankstatement_response.rb"
+        migration_template "migration_bankstatement_query.rb", "db/migrate/create_bankstatement_query.rb"
       end
     end
   end
