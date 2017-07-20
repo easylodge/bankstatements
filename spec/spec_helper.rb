@@ -1,6 +1,7 @@
 require 'bundler/setup'
 require 'bankstatements'
 require 'shoulda/matchers'
+require 'faker'
 require 'pry'
 Bundler.setup
 
