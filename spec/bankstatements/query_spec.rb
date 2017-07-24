@@ -102,28 +102,28 @@ describe Bankstatements::Query do
   end
 
 
-  # describe ".get_institutions", :focus do
-  #   it "raises an exception if no access[:url] is present" do
-  #     subject.access[:url] = nil
-  #     expect{subject.get_institutions}.to raise_error("No API URL configured")
-  #   end
+  describe ".get_institutions" do
+    it "raises an exception if no access[:url] is present" do
+      subject.access[:url] = nil
+      expect{subject.get_institutions}.to raise_error("No API URL configured")
+    end
 
-  #   it "return any existing value" do
-  #     subject.institutions = "preset"
-  #     expect(subject.get_institutions).to eq("preset")
-  #   end
+    it "return any existing value" do
+      subject.institutions = "preset"
+      expect(subject.get_institutions).to eq("preset")
+    end
 
-  #   it "does not get new results if there is an existing value" do
-  #     subject.institutions = "preset"
-  #     expect(HTTParty).not_to receive(:get)
-  #     subject.get_institutions
-  #   end
+    it "does not get new results if there is an existing value" do
+      subject.institutions = "preset"
+      expect(HTTParty).not_to receive(:get)
+      subject.get_institutions
+    end
 
-  #   xit "populates institution detail" do
-  #     subject.get_institutions
-  #     expect(subject.institutions).to be_a(Array)
-  #   end
-  # end
+    it "populates institution detail", :focus do
+      subject.get_institutions
+      expect(subject.institutions).to be_a(Array)
+    end
+  end
 
 #   describe ".get_accounts" do
 #     before(:each) do

@@ -23,10 +23,6 @@ class Bankstatements::Query < ActiveRecord::Base
       "referral_code": ref_id || 'xxx'
     }
     response = post(access[:url] + "login", credentials)
-p credentials
-p access[:url] + "login"
-p headers
-p response
 
     # set the suer token into the access hash for re-use
     self.access[:user_token] = response[:user_token]
@@ -47,6 +43,7 @@ p response
     raise "No API URL configured" unless access[:url]
     self.institutions ||= get(access[:url] + "institutions")[:institutions]
   end
+
 
   def get_accounts(bank_slug)
     raise "No API URL configured" unless access[:url]
@@ -96,7 +93,6 @@ p response
       'X-OUTPUT-VERSION' => '20170401'
     }
     request_headers.merge!({'X-USER-TOKEN': access[:user_token]}) if access[:user_token].present?
-
     request_headers
   end
 
@@ -109,7 +105,6 @@ p response
 
   def post(url, payload)
     http_response = HTTParty.get(url, headers: headers, body: payload)
-p http_response
     http_response.parsed_response.with_indifferent_access
   rescue
     {error: "Failure to connect to #{url}"}
