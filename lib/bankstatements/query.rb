@@ -15,16 +15,15 @@ class Bankstatements::Query < ActiveRecord::Base
     end
 
     credentials = {
-      "credentials": {
-        "institution": bank_slug,
-        "username": access[:username],
-        "password": access[:password]
+      'credentials' => {
+        'institution' => bank_slug,
+        'username' => access[:username],
+        'password' => access[:password]
       },
-      "referral_code": ref_id || 'xxx'
+      'referral_code' => ref_id || 'xxx'
     }
     response = post(access[:url] + "login", credentials)
-
-    # set the suer token into the access hash for re-use
+    # set the user token into the access hash for re-use
     self.access[:user_token] = response[:user_token]
 
     self.accounts ||= {}
@@ -97,15 +96,16 @@ class Bankstatements::Query < ActiveRecord::Base
   end
 
   def get(url)
-    http_response = HTTParty.get(url, headers: headers)
-    http_response.parsed_response.with_indifferent_access
+    http = HTTParty.get(url, headers: headers)
+    http.parsed_response.with_indifferent_access
   rescue
     {error: "Failure to connect to #{url}"}
   end
 
   def post(url, payload)
-    http_response = HTTParty.get(url, headers: headers, body: payload)
-    http_response.parsed_response.with_indifferent_access
+    http = HTTParty.post(url, {headers: headers}.merge(body: payload))
+    binding.pry
+    http.parsed_response.with_indifferent_access
   rescue
     {error: "Failure to connect to #{url}"}
   end

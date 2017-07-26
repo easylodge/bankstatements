@@ -86,15 +86,14 @@ describe Bankstatements::Query do
         expect(subject.login(Faker::Lorem.word)).to eq(true)
       end
 
-      context "real connection", :focus do
+      context "real connection" do
         before(:each) do
           allow(subject).to receive(:post).and_call_original
         end
 
         it "works" do
           subject.login(subject.access[:institution])
-
-
+          expect("todo").to eq("still")
         end
       end
     end
@@ -102,7 +101,7 @@ describe Bankstatements::Query do
   end
 
 
-  describe ".get_institutions" do
+  xdescribe ".get_institutions" do
     it "raises an exception if no access[:url] is present" do
       subject.access[:url] = nil
       expect{subject.get_institutions}.to raise_error("No API URL configured")
@@ -119,7 +118,7 @@ describe Bankstatements::Query do
       subject.get_institutions
     end
 
-    it "populates institution detail", :focus do
+    it "populates institution detail" do
       subject.get_institutions
       expect(subject.institutions).to be_a(Array)
     end
