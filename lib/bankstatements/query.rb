@@ -103,8 +103,10 @@ class Bankstatements::Query < ActiveRecord::Base
   end
 
   def post(url, payload)
-    http = HTTParty.post(url, {headers: headers}.merge(body: payload))
-    binding.pry
+    http = HTTParty.post(url, {headers: headers, body: payload.to_json})
+    p "posting..."
+    p http.request.options
+    p http.parsed_response
     http.parsed_response.with_indifferent_access
   rescue
     {error: "Failure to connect to #{url}"}

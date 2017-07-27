@@ -86,7 +86,7 @@ describe Bankstatements::Query do
         expect(subject.login(Faker::Lorem.word)).to eq(true)
       end
 
-      context "real connection" do
+      context "real connection", :focus do
         before(:each) do
           allow(subject).to receive(:post).and_call_original
         end
