@@ -5,6 +5,7 @@ class Bankstatements::Query < ActiveRecord::Base
   serialize :accounts
 
   attr_accessor :institutions
+  attr_accessor :files_available
 
   def login(bank_slug)
     return false unless valid_credentials?
@@ -22,6 +23,7 @@ class Bankstatements::Query < ActiveRecord::Base
       },
       'referral_code' => ref_id || 'xxx'
     }
+    self.access[:user_token] = nil #post will fail with a stale user token
     response = post(access[:url] + "login", credentials)
     # set the user token into the access hash for re-use
     self.access[:user_token] = response[:user_token]
@@ -35,6 +37,9 @@ class Bankstatements::Query < ActiveRecord::Base
         self.accounts[bank_slug][:accounts] << acc.merge({bank_slug: bank_slug})
       end
     end
+
+    self.files_available = false
+
     response[:user_token].present?
   end
 
@@ -43,11 +48,10 @@ class Bankstatements::Query < ActiveRecord::Base
     self.institutions ||= get(access[:url] + "institutions")[:institutions]
   end
 
-
   def get_accounts(bank_slug)
-    raise "No API URL configured" unless access[:url]
-    raise "No user token available" unless access[:user_token]
-
+    raise "No API URL configured" unless access[:url].present?
+    raise "No user token present" unless access[:user_token].present?
+    raise "No bank slug provided" unless bank_slug.present?
     self.accounts[bank_slug] ||= get(access[:url] + "accounts")[:accounts][bank_slug]
   end
 
@@ -58,29 +62,24 @@ class Bankstatements::Query < ActiveRecord::Base
     # we need to only pull the statement for the specified account number
     # so first we need to find the bank
     account = find_account_for(account_number)
-
     request = {
       accounts: {
         "#{account[:bank_slug]}": [account[:id]]
       }
     }
     response = post(access[:url] + "statements", request)
-    # delete any existing copy of the account, we now have better info
-    self.accounts.each do|bank, accts|
-      accts.map! do |acc|
-        if acc[:accountNumber] == account_number
-          response[acc[:bank_slug]][:accounts][0]
-        else
-          acc
-        end
-      end
-    end
+
+    self.files_available = true
+    response
   end
 
   # gets all the files for previous queries
-  # def get_files
-  #   get(access[:url] + "files")
-  # end
+  def get_files
+    return @files if @files.present?
+    raise "No user token present" unless access[:user_token].present?
+    raise "No files available" unless self.files_available?
+    @files ||= get(access[:url] + "files")
+  end
 
   private
 
@@ -97,17 +96,14 @@ class Bankstatements::Query < ActiveRecord::Base
 
   def get(url)
     http = HTTParty.get(url, headers: headers)
-    http.parsed_response.with_indifferent_access
+    http.parsed_response.deep_symbolize_keys
   rescue
     {error: "Failure to connect to #{url}"}
   end
 
   def post(url, payload)
     http = HTTParty.post(url, {headers: headers, body: payload.to_json})
-    p "posting..."
-    p http.request.options
-    p http.parsed_response
-    http.parsed_response.with_indifferent_access
+    http.parsed_response.deep_symbolize_keys
   rescue
     {error: "Failure to connect to #{url}"}
   end
@@ -115,11 +111,11 @@ class Bankstatements::Query < ActiveRecord::Base
   def find_account_for(account_number)
     result = nil
     self.accounts.detect do |bank, accounts|
-      result = accounts.detect do |acc|
+      result = accounts.with_indifferent_access[:accounts].detect do |acc|
         acc[:accountNumber] == account_number
       end
     end
-    Hash[*result]
+    result
   end
 
   def valid_credentials?
