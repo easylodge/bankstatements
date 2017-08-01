@@ -18,7 +18,7 @@ require_relative 'spec/schema'
   'foo' => 'bar'
 }
 
-@req = Bankstatement::query.new(access: @access_hash)
+@req = Proviso::query.new(access: @access_hash)
 
 puts "You now have a request instance to use."
 # @req.get_institutions

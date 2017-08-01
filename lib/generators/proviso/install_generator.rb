@@ -1,10 +1,10 @@
-module Bankstatement
+module Proviso
   module Generators
     class InstallGenerator < Rails::Generators::Base
       include Rails::Generators::Migration
 
       source_root File.expand_path("../../templates", __FILE__)
-      desc "Sets up the Bankstatement migrations File"
+      desc "Sets up the Proviso migrations File"
 
       def self.next_migration_number(dirname)
         Time.new.utc.strftime("%Y%m%d%H%M%S")
@@ -12,7 +12,7 @@ module Bankstatement
 
       def create_migration_file
         #copy migration
-        migration_template "migration_bankstatement_query.rb", "db/migrate/create_bankstatement_query.rb"
+        migration_template "migration_proviso_queries.rb", "db/migrate/create_proviso_queries.rb"
       end
     end
   end

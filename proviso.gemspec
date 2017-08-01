@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'bankstatements/version'
+require 'proviso/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "bankstatements"
-  spec.version       = Bankstatements::VERSION
+  spec.name          = "proviso"
+  spec.version       = Proviso::VERSION
   spec.authors       = ["Jean le Roux", "Wynand Stolp"]
   spec.email         = ["info@easylodge.com.au"]
-  spec.summary       = %q{Bankstatements.com.au integration}
-  spec.description   = %q{Rails gem for using the Bankstatements.com.au service.}
-  spec.homepage      = "https://github.com/easylodge/bankstatements"
+  spec.summary       = %q{Proviso Bankstatements.com.au integration}
+  spec.description   = %q{Rails gem for using the Proviso Bankstatements.com.au service.}
+  spec.homepage      = "https://github.com/easylodge/proviso"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

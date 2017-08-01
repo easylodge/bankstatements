@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in bankstatements.gemspec
+# Specify your gem's dependencies in proviso.gemspec
 gemspec
 
 # group :development do

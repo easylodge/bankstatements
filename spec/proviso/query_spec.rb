@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Bankstatements::Query do
-  let(:subject) {Bankstatements::Query.new}
+describe Proviso::Query do
+  let(:subject) {Proviso::Query.new}
 
   it { should respond_to(:ref_id) }
   it { should respond_to(:access) }

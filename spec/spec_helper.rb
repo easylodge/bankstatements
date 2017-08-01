@@ -1,5 +1,5 @@
 require 'bundler/setup'
-require 'bankstatements'
+require 'proviso'
 require 'shoulda/matchers'
 require 'faker'
 require 'pry'

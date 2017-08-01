@@ -1,5 +1,5 @@
-class Bankstatements::Query < ActiveRecord::Base
-  self.table_name = "bankstatement_queries"
+class Proviso::Query < ActiveRecord::Base
+  self.table_name = "proviso_queries"
 
   serialize :access
   serialize :accounts
