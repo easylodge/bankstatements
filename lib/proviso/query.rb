@@ -5,7 +5,6 @@ class Proviso::Query < ActiveRecord::Base
   serialize :accounts
 
   attr_accessor :institutions
-  attr_accessor :files_available
 
   def login(bank_slug)
     return false unless valid_credentials?
@@ -38,8 +37,6 @@ class Proviso::Query < ActiveRecord::Base
       end
     end
 
-    self.files_available = false
-
     response[:user_token].present?
   end
 
@@ -67,18 +64,17 @@ class Proviso::Query < ActiveRecord::Base
         "#{account[:bank_slug]}": [account[:id]]
       }
     }
-    response = post(access[:url] + "statements", request)
 
-    self.files_available = true
-    response
+    post(access[:url] + "statements", request)
   end
 
   # gets all the files for previous queries
   def get_files
     return @files if @files.present?
     raise "No user token present" unless access[:user_token].present?
-    raise "No files available" unless self.files_available?
     @files ||= get(access[:url] + "files")
+    raise "No files available" unless @files.present?
+    @files
   end
 
   private

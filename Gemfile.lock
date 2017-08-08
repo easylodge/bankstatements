@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    bankstatements (0.1.1)
+    proviso (0.1.2)
       activesupport
       httparty
 
@@ -113,9 +113,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bankstatements!
   bundler
   faker
+  proviso!
   pry
   rails (~> 4.0.0)
   rake
