@@ -23,7 +23,7 @@ class Proviso::Query < ActiveRecord::Base
       'referral_code' => ref_id || 'xxx'
     }
     self.access[:user_token] = nil #post will fail with a stale user token
-    response = post(statements_url + "login", credentials)
+    response = post(proviso_url + "login", credentials)
     # set the user token into the access hash for re-use
     self.access[:user_token] = response[:user_token]
 
