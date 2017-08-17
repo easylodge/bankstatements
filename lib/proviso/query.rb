@@ -23,7 +23,7 @@ class Proviso::Query < ActiveRecord::Base
       'referral_code' => ref_id || 'xxx'
     }
     self.access[:user_token] = nil #post will fail with a stale user token
-    response = post(access[:url] + "login", credentials)
+    response = post(statements_url + "login", credentials)
     # set the user token into the access hash for re-use
     self.access[:user_token] = response[:user_token]
 
@@ -34,22 +34,22 @@ class Proviso::Query < ActiveRecord::Base
       response[:accounts].each do |acc|
         # make sure we replace any existing account info for this bank
         self.accounts[bank_slug][:accounts] << acc.merge({bank_slug: bank_slug})
-      end
+      end if response[:accounts].present?
     end
 
     response[:user_token].present?
   end
 
   def get_institutions
-    raise "No API URL configured" unless access[:url]
-    self.institutions ||= get(access[:url] + "institutions")[:institutions]
+    raise "No API URL configured" unless proviso_url
+    self.institutions ||= get(proviso_url + "institutions")[:institutions]
   end
 
   def get_accounts(bank_slug)
-    raise "No API URL configured" unless access[:url].present?
+    raise "No API URL configured" unless proviso_url.present?
     raise "No user token present" unless access[:user_token].present?
     raise "No bank slug provided" unless bank_slug.present?
-    self.accounts[bank_slug] ||= get(access[:url] + "accounts")[:accounts][bank_slug]
+    self.accounts[bank_slug] ||= get(proviso_url + "accounts")[:accounts][bank_slug]
   end
 
   def get_statements(account_number)
@@ -65,14 +65,14 @@ class Proviso::Query < ActiveRecord::Base
       }
     }
 
-    post(access[:url] + "statements", request)
+    post(proviso_url + "statements", request)
   end
 
   # gets all the files for previous queries
   def get_files
     return @files if @files.present?
     raise "No user token present" unless access[:user_token].present?
-    @files ||= get(access[:url] + "files")
+    @files ||= get(proviso_url + "files")
     raise "No files available" unless @files.present?
     @files
   end
@@ -81,7 +81,7 @@ class Proviso::Query < ActiveRecord::Base
 
   def headers
     request_headers = {
-      'X-API-KEY' => access[:api_key],
+      'X-API-KEY' => proviso_api_key,
       'Content-Type' => 'application/json',
       'Accept' => 'application/json',
       'X-OUTPUT-VERSION' => '20170401'
@@ -116,9 +116,9 @@ class Proviso::Query < ActiveRecord::Base
 
   def valid_credentials?
     self.error = nil
-    if !access[:url].present?
+    if !proviso_url.present?
       self.error = "No url set"
-    elsif !access[:api_key].present?
+    elsif !proviso_api_key.present?
       self.error = "No api_key set"
     elsif !access[:username].present?
       self.error = "No username set"
@@ -128,4 +128,11 @@ class Proviso::Query < ActiveRecord::Base
     self.error.blank?
   end
 
+  def proviso_url
+    access[:url] || Proviso.configuration.url
+  end
+
+  def proviso_api_key
+    access[:api_key] || Proviso.configuration.api_key
+  end
 end
