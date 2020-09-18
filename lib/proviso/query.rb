@@ -43,7 +43,9 @@ class Proviso::Query < ActiveRecord::Base
   end
 
   def bank_slug(bank_name)
-    institutions.detect {|i| i[:name] == bank_name }[:slug]
+    institutions.detect {|i| i[:name].downcase == bank_name.downcase }[:slug]
+  rescue
+    nil
   end
 
   def get_accounts(bank_slug)
