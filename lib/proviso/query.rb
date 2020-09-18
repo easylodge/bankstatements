@@ -6,8 +6,10 @@ class Proviso::Query < ActiveRecord::Base
 
   attr_accessor :institutions
 
-  def login(bank_slug)
+  def login(bank_name)
     return false unless valid_credentials?
+
+    bank_slug = bank_slug(bank_name)
 
     unless bank_slug.present?
       self.error = "No bank slug provided"
@@ -37,12 +39,11 @@ class Proviso::Query < ActiveRecord::Base
       end if response[:accounts].present?
     end
 
-    response[:user_token].present?
+    response[:error].nil? && response[:user_token].present?
   end
 
-  def get_institutions
-    raise "No API URL configured" unless proviso_url
-    self.institutions ||= get(proviso_url + "institutions")[:institutions]
+  def bank_slug(bank_name)
+    institutions.detect {|i| i[:name] == bank_name }[:slug]
   end
 
   def get_accounts(bank_slug)
@@ -73,8 +74,14 @@ class Proviso::Query < ActiveRecord::Base
     return @files if @files.present?
     raise "No user token present" unless access[:user_token].present?
     @files ||= get(proviso_url + "files")
-    raise "No files available" unless @files.present?
-    @files
+    @files.presence || raise("No files available")
+  end
+
+  def institutions
+    return @institutions if @institutions.present?
+    raise "No API URL configured" unless proviso_url
+    @institutions ||= get(proviso_url + "institutions")[:institutions]
+    @institutions.presence || raise("Could not fetch institutions")
   end
 
   private
