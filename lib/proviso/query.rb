@@ -9,10 +9,15 @@ class Proviso::Query < ActiveRecord::Base
   def login(bank_name)
     return false unless valid_credentials?
 
+    unless bank_name.present?
+      self.error = "No bank name provided"
+      return false
+    end
+
     bank_slug = bank_slug(bank_name)
 
     unless bank_slug.present?
-      self.error = "No bank slug provided"
+      self.error = "Bank not found..."
       return false
     end
 
